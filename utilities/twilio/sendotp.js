@@ -9,11 +9,11 @@ const otpgenerate=async function(phone) {
   
   const twilio =require('twilio');
   const client=twilio(accountSid, authId);
-
+console.log(phone,'jjjjjjjjjjjjjjjjjjjj');
 
   verification = await client.verify.v2.services(serviceSid)
       .verifications.create({to: `${countryCode}${phone}`, channel: 'sms'})
-      .then(res=>console.log(res+ "sended"))
+      .then(res=>console.log(res+ "sended....."))
       .catch(err=>console.log(err))
 };
 

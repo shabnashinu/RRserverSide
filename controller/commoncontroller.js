@@ -1,7 +1,8 @@
-const User = require("../models/userModel")
-const sendotp = require("../twilio/sendotp")
-const jwt = require('jsonwebtoken')
-const bcrypt = require('bcrypt')
+const User = require("../models/userModel");
+const sendotp = require("../utilities/twilio/sendotp");
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 
 
 require('dotenv').config();
@@ -13,9 +14,10 @@ const twilio = require('twilio');
 const client = twilio(accountSid, authId);
 
 
+
 const signup = async (req, res) => {
     console.log(req.body);
-    const { firstname, lastname, phone, email, password } = req.body
+    const { phone } = req.body
     const exist = await User.findOne({ phone })
 
     if (exist) {
@@ -38,12 +40,21 @@ const signup = async (req, res) => {
 const verifyotp = async (req, res) => {
     const { firstname, lastname, email, password, phone, otp } = req.body
     // verification check
+
+    console.log(req.body);
+    
+    if (!phone || !otp) {
+        return res.status(400).json({ error: 'Missing phone number or OTP' });
+    }
+
     try {
         const verificationCheck = await client.verify.v2.services(serviceSid)
             .verificationChecks.create({ to: `+91${phone}`, code: otp })
             console.log("verified", verificationCheck);
             if (verificationCheck && verificationCheck.status === 'approved') {
-                const hashepassword = await bcrypt.hash(password, 10)
+                const hashepassword = await bcrypt.hash(password, 10);
+                console.log("------------------------------------------------------------");
+                console.log(hashepassword);
                 const newUser = new User({
                     firstName: firstname,
                     lastName: lastname,
@@ -57,10 +68,10 @@ const verifyotp = async (req, res) => {
                     const secretKey = process.env.secretKey;
 
                     const find=User.findOne({phone})
-                    console.log("finded",find,find._id,find.userType);
+                    // console.log("finded",find,find._id,find.userType);
                     const payload = { id:savedUser._id, userType:savedUser.usertype};
                     const token = jwt.sign(payload, secretKey, { expiresIn: "1h" });
-                    console.log(token);
+                    // console.log(token);
                     res.json({
                         token:token,
                         success: true,
@@ -131,22 +142,53 @@ const forgotpassword = async(req,res)=>{
 }
 
 //verifyuser
-const verfy = async(req,res)=>{
-    const {phone,otp}=req.body
-    console.log(req.body);
-    sendotp.verify(phone,otp)
-    .then((verificationCheck)=>{
-        console.log(verificationCheck);
-        if(verificationCheck && verificationCheck.status === "approved"){
-            res.json({otpverified:true})
+const verify = async (req, res) => {
+    const { phone, otp } = req.body;
+
+    if (!phone || !otp) {
+        return res.status(400).json({ error: 'Missing phone number or OTP' });
+    }
+
+    try {
+        const verificationCheck = await sendotp.verify(phone, otp);
+        
+        if (verificationCheck && verificationCheck.status === "approved") {
+            return res.json({ otpverified: true });
+        } else {
+            return res.json({ otpverified: false });
         }
-        else {
-            res.json({otpverified:false})
+    } catch (error) {
+        console.error("Error verifying OTP:", error);
+        return res.status(500).json({ error: 'Internal server error' });
+    }
+};
+
+
+const resetpassword = async (req,res)=>{
+    const { phone, password } = req.body;
+    console.log(phone);
+    console.log(password);
+    try {
+        // Find the user by phone number
+        const user = await User.findOne({ phone });
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
         }
-    }).catch(()=>{
-        res.json({otpverified:false})
-    })
+        const hashedPassword = await bcrypt.hash(password, 10);
+         // Update the user's password
+        user.password = hashedPassword;
+        await user.save();
+        return res.json({ message: 'Password reset successfully' });
+        } catch (error) {
+        console.error('Error resetting password:', error);
+        return res.status(500).json({ error: 'Internal server error' });
+  }
+
 }
+
+
+
+
 
 
 module.exports = {
@@ -154,5 +196,6 @@ module.exports = {
     verifyotp,
     login,
     forgotpassword,
-    verfy
+    verify,
+    resetpassword,
 }

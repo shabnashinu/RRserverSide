@@ -1,12 +1,11 @@
-const mongoose = require ('mongoose');
-const { Number } = require('twilio/lib/twiml/VoiceResponse');
+const mongoose = require ('mongoose')
 
-const userSchema = new mongoose.Schema({
+const userinterface = new mongoose.Schema({
     firstName:{
         type:String,
         required: [true, 'firstname is reqired']
     },
-   lastName:{
+    lastName:{
         type:String,
         required:true
     },
@@ -14,20 +13,21 @@ const userSchema = new mongoose.Schema({
         type:Number,
         required:true
     },
-    password:{
-        type:String,
-        required:true
-    },
     email:{
         type:String,
         required:true
     },
-    usertype:{
+    password:{
         type:String,
-        default:'user'
+        required:true
+    },
+    address:{
+        type:String,
+        required:true
     }
-})
+  });
 
-const User = mongoose.model("Users",userSchema)
 
-module.exports = User
+  const user = mongoose.model('userregister',userinterface)
+
+  module.exports = user
