@@ -4,7 +4,7 @@ const usercontroller = require('../controller/usercontroller')
 
 
 Router.post('/user-registration-data',usercontroller.registrationuser)
-
+Router.post('/upload',usercontroller.isuserregistered)
 
 
 module.exports = Router

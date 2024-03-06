@@ -1,4 +1,5 @@
-const user  = require('../models/user-registration-model')
+const user = require('../models/user-registration-model');
+
 
 
 const registrationuser = async (req, res) => {
@@ -28,6 +29,31 @@ const registrationuser = async (req, res) => {
 }
 
 
+
+//to check is it registered or not
+const isuserregistered = async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        const user = await user.findOne({ email });
+
+        if (user) {
+            if (user.approved) {
+                res.status(200).json({ registered: true, approved: true });
+            } else {
+                res.status(200).json({ registered: true, approved: false });
+            }
+        } else {
+            res.status(200).json({ registered: false });
+        }
+    } catch (error) {
+        console.error('Error checking user registration:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
+
 module.exports={
-    registrationuser
+    registrationuser,
+    isuserregistered
 }

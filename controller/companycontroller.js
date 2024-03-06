@@ -5,7 +5,6 @@ const companyregistration = async (req, res) => {
     try {
    
         const { companyName, address, contactPerson, email, phoneNumber } = req.body;
-        console.log(req.file.location);
 
         // Extract file locations from the uploaded files
         const businessLicense = req.files['businessLicense'][0].location;

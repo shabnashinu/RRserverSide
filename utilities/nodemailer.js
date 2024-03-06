@@ -9,8 +9,7 @@ const transporter = nodemailer.createTransport({
 });
 
 
-const nodemail = {
-  approvedmail: (too ) => {
+const nodemail =(too )=> {
     const mailOptions = {
       from: process.env.MAIL,
       to: too,
@@ -26,16 +25,19 @@ const nodemail = {
       }
       console.log("Email sent:", info.response);
     });
-  },
-  rejectmail: (too , companyname) => {
+  }
+
+
+  const rejectmail =(too )=> {
     const mailOptions = {
       from: process.env.MAIL,
       to: too,
-      subject: "Rejection of Company Request to Join RestoreRadiance",
-      text: `Dear ,${companyname}
+      subject:
+      "Rejection of Company Request to Join RestoreRadiance",
+      text: `Dear ,
        After careful consideration, we regret to inform you that your company has been rejected. 
        RestoreRadiance Team
-        `,
+           `,
     };
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
@@ -43,12 +45,11 @@ const nodemail = {
       }
       console.log("Email sent:", info.response);
     });
-  },
-};
+  }
 
 
 
-const mailapprove =(too, companyname, ) => {
+const mailapprove =(too) => {
       const mailOptions = {
         from: process.env.MAIL,
         to: too,
@@ -72,5 +73,6 @@ const mailapprove =(too, companyname, ) => {
 
 module.exports = {
     nodemail,
-    mailapprove
+    mailapprove,
+    rejectmail
 };
