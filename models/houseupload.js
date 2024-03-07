@@ -1,7 +1,11 @@
 const mongoose = require ('mongoose')
 
 const houseSchema = new mongoose.Schema({
-    pictureUrl: 
+    email: {
+        type: String,
+        required: true,
+      },
+    picture: 
     { 
         type: String,
          required: true 
@@ -15,5 +19,5 @@ const houseSchema = new mongoose.Schema({
   
   const House = mongoose.model('House', houseSchema);
 
-  module.exports
+  module.exports = House
   

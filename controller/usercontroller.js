@@ -1,4 +1,5 @@
 const user = require('../models/user-registration-model');
+const useruploads = require('../models/houseupload')
 
 
 
@@ -32,28 +33,61 @@ const registrationuser = async (req, res) => {
 
 //to check is it registered or not
 const isuserregistered = async (req, res) => {
+    console.log(req.body);
+  
+    const { email , budget } = req.body;
+    console.log(req.file);
+
+  try {
+  
+    const registereduser = await user.findOne({ email });
+    if (registereduser) {
+
+        const picture = req.file.location
+        const upload = new useruploads
+        ({ 
+            email, 
+            picture, 
+            budget 
+        });
+        await upload.save();
+     
+      res.status(200).json({ registered: true });
+    } else {
+      
+      res.status(200).json({ registered: false });
+    }
+  } catch (error) {
+    console.error('Error checking user registration:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+// to display the userhomes and budget
+const getuseruploads = async(req,res)=>{
+  
     try {
-        const { email } = req.body;
 
-        const user = await user.findOne({ email });
-
-        if (user) {
-            if (user.approved) {
-                res.status(200).json({ registered: true, approved: true });
-            } else {
-                res.status(200).json({ registered: true, approved: false });
-            }
-        } else {
-            res.status(200).json({ registered: false });
+        const uploadeduser = await useruploads.find()
+        if(uploadeduser){
+            res.status(200).json(uploadeduser); 
         }
+        else{
+            res.status(404).json({ error: 'User data not found' });
+        }
+        
     } catch (error) {
-        console.error('Error checking user registration:', error);
+        console.error('Error retrieving user data:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 }
 
 
+
+
 module.exports={
     registrationuser,
-    isuserregistered
+    isuserregistered,
+    getuseruploads
 }
