@@ -83,11 +83,33 @@ const getuseruploads = async(req,res)=>{
     }
 }
 
+//to update
+const updateuseruploads = async(req,res)=>{
+    const { budget,email } = req.body;
+    console.log(req.file.location);
+    console.log(budget);
+    try {
+        const updatedUser = await useruploads.findOne({email});
+        updatedUser.budget = budget
+        updatedUser.picture = req.file.location
+        updatedUser.save()
+        if (updatedUser) {
+          res.status(200).json(updatedUser);
+        } else {
+          res.status(404).json({ error: 'User not found' });
+        }
+      } catch (error) {
+        console.error('Error updating user data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+}
+
 
 
 
 module.exports={
     registrationuser,
     isuserregistered,
-    getuseruploads
+    getuseruploads,
+    updateuseruploads
 }
