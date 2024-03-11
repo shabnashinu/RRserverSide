@@ -43,37 +43,52 @@ const companyregistration = async (req, res) => {
 
 
 //to check company is  registered or not
-const iscompanyregistered = async(req,res)=>{
-
-    const {email,title,description}=req.body
+const iscompanyregistered = async (req, res) => {
+    const { email, title, description } = req.body;
     console.log(email);
     try {
         const registeredcompany = await company.findOne({ email });
-    if (registeredcompany) {
+        if (registeredcompany) {
+            const picture =  req.file.location  
+            const companyupload = new companyproject({
+                email,
+                picture,
+                title,
+                description
+            });
 
-        const picture = req.file.location
-        const upload = new companyproject
-        ({ 
-            email, 
-            picture, 
-            title,
-            description 
-        });
-        await upload.save();
-     
-      res.status(200).json({ registered: true });
-    } else {
-      res.status(200).json({ registered: false });
-    }
-        
+
+            const savecompany = await companyupload.save();
+            console.log(savecompany);
+            res.status(200).json({ registered: true });
+        } else {
+            res.status(200).json({ registered: false });
+        }
     } catch (error) {
         console.error('Error checking company registration:', error);
-        res.status(500).json({ error: 'Internal server error' }); 
+        res.status(500).json({ error: 'Internal server error' });
     }
-
 }
 
 
+// to display the companyuploads and budget
+const getcompanyuploads = async(req,res)=>{
+    try {
+
+        const uploadedcompany = await companyproject.find()
+        console.log(uploadedcompany);
+        if(uploadedcompany){
+            res.status(200).json(uploadedcompany); 
+        }
+        else{
+            res.status(404).json({ error: 'company data not found' });
+        }
+        
+    } catch (error) {
+        console.error('Error retrieving user data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
 
 
 
@@ -83,6 +98,7 @@ const iscompanyregistered = async(req,res)=>{
 
 module.exports={
     companyregistration,
-    iscompanyregistered
+    iscompanyregistered,
+    getcompanyuploads
 }
 

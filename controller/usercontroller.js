@@ -64,7 +64,7 @@ const isuserregistered = async (req, res) => {
 }
 
 
-// to display the userhomes and budget
+// to display the useruploads and budget
 const getuseruploads = async(req,res)=>{
   
     try {
@@ -82,6 +82,9 @@ const getuseruploads = async(req,res)=>{
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+
+
 
 //to update user uploads 
 const updateuseruploads = async(req,res)=>{

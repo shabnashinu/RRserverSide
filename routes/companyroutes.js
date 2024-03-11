@@ -12,5 +12,7 @@ Router.post('/registrationform', s3file.fields([
 ]), companycontroller.companyregistration);
 
 Router.post('/companyupload', s3file.single('picture'), companycontroller.iscompanyregistered);
+Router.get('/getcompanyuploads',companycontroller.getcompanyuploads)
+
 
 module.exports = Router
