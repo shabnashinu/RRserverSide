@@ -8,4 +8,5 @@ Router.post('/user-registration-data',usercontroller.registrationuser)
 Router.post('/upload', upload.single('picture'), usercontroller.isuserregistered);
 Router.get('/getuseruploads',usercontroller.getuseruploads)
 Router.put('/updateuserupload',upload.single('picture'),usercontroller.updateuseruploads)
+Router.delete('/deleteuserupload/:data',usercontroller.deleteuseruploads)
 module.exports = Router

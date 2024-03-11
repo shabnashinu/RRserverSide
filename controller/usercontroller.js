@@ -83,7 +83,7 @@ const getuseruploads = async(req,res)=>{
     }
 }
 
-//to update
+//to update user uploads 
 const updateuseruploads = async(req,res)=>{
     const { budget,email } = req.body;
     console.log(req.file.location);
@@ -104,6 +104,21 @@ const updateuseruploads = async(req,res)=>{
       }
 }
 
+const deleteuseruploads = async(req,res)=>{
+    const email = req.params.data;
+    console.log(email);
+  try {
+    const deletedUser = await useruploads.findOneAndDelete({ email });
+    if (deletedUser) {
+      res.status(200).json({ message: 'User upload deleted successfully' });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting user upload:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
 
 
 
@@ -111,5 +126,6 @@ module.exports={
     registrationuser,
     isuserregistered,
     getuseruploads,
-    updateuseruploads
+    updateuseruploads,
+    deleteuseruploads
 }

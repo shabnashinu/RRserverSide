@@ -47,6 +47,7 @@ const approvalmessage = async (req, res) => {
     }
 }
 
+//sending mail for company
 const companyapprovalmail = async(req,res)=>{
     try {
         const {email}=req.body

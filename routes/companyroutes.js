@@ -11,4 +11,6 @@ Router.post('/registrationform', s3file.fields([
   { name: 'projectPortfolio', maxCount: 1 }
 ]), companycontroller.companyregistration);
 
+Router.post('/companyupload', s3file.single('picture'), companycontroller.iscompanyregistered);
+
 module.exports = Router

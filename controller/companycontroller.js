@@ -1,4 +1,5 @@
 const company = require('../models/company')
+const companyproject = require('../models/projectupload')
 
 
 const companyregistration = async (req, res) => {
@@ -35,7 +36,53 @@ const companyregistration = async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 }
+
+
+
+
+
+
+//to check company is  registered or not
+const iscompanyregistered = async(req,res)=>{
+
+    const {email,title,description}=req.body
+    console.log(email);
+    try {
+        const registeredcompany = await company.findOne({ email });
+    if (registeredcompany) {
+
+        const picture = req.file.location
+        const upload = new companyproject
+        ({ 
+            email, 
+            picture, 
+            title,
+            description 
+        });
+        await upload.save();
+     
+      res.status(200).json({ registered: true });
+    } else {
+      res.status(200).json({ registered: false });
+    }
+        
+    } catch (error) {
+        console.error('Error checking company registration:', error);
+        res.status(500).json({ error: 'Internal server error' }); 
+    }
+
+}
+
+
+
+
+
+
+
+
+
 module.exports={
-    companyregistration
+    companyregistration,
+    iscompanyregistered
 }
 
