@@ -14,6 +14,7 @@ Router.post('/registrationform', s3file.fields([
 Router.post('/companyupload', s3file.single('picture'), companycontroller.iscompanyregistered);
 Router.get('/getcompanyuploads',companycontroller.getcompanyuploads)
 Router.put('/updatecompanyupload',s3file.single('picture'),companycontroller.updatecompanyuploads)
+Router.delete('/deletcompany/:data',companycontroller.deletecompanyuploads)
 
 
 module.exports = Router

@@ -114,6 +114,24 @@ const updatecompanyuploads = async(req,res)=>{
 }
 
 
+//to delete company projects
+const deletecompanyuploads = async(req,res)=>{
+    const email = req.params.data;
+    console.log(email);
+  try {
+    const deletedcompany = await companyproject.findOneAndDelete({ email });
+    if (deletedcompany) {
+      res.status(200).json({ message: 'User upload deleted successfully' });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error deleting user upload:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
 
 
 
@@ -123,6 +141,7 @@ module.exports={
     companyregistration,
     iscompanyregistered,
     getcompanyuploads,
-    updatecompanyuploads
+    updatecompanyuploads,
+    deletecompanyuploads
 }
 
