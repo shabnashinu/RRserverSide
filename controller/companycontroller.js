@@ -76,7 +76,6 @@ const getcompanyuploads = async(req,res)=>{
     try {
 
         const uploadedcompany = await companyproject.find()
-        console.log(uploadedcompany);
         if(uploadedcompany){
             res.status(200).json(uploadedcompany); 
         }
@@ -92,6 +91,30 @@ const getcompanyuploads = async(req,res)=>{
 
 
 
+//to update company uploads 
+const updatecompanyuploads = async(req,res)=>{
+    const { title,email,description } = req.body;
+    console.log(req.file.location);
+    
+    try {
+        const updatedcompany = await companyproject.findOne({email});
+        updatedcompany.title = title
+        updatedcompany.description = description
+        updatedcompany.picture = req.file.location
+        updatedcompany.save()
+        if (updatedcompany) {
+          res.status(200).json(updatedcompany);
+        } else {
+          res.status(404).json({ error: 'User not found' });
+        }
+      } catch (error) {
+        console.error('Error updating user data:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+}
+
+
+
 
 
 
@@ -99,6 +122,7 @@ const getcompanyuploads = async(req,res)=>{
 module.exports={
     companyregistration,
     iscompanyregistered,
-    getcompanyuploads
+    getcompanyuploads,
+    updatecompanyuploads
 }
 

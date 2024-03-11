@@ -107,6 +107,8 @@ const updateuseruploads = async(req,res)=>{
       }
 }
 
+
+
 const deleteuseruploads = async(req,res)=>{
     const email = req.params.data;
     console.log(email);
